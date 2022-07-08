@@ -1,0 +1,12 @@
+{
+  "python.analysis.extraPaths": [
+    "./services",
+    "./provider/aws",
+    "./python/lib/python3.9/site-packages/aws",
+    "./python/lib/python3.9/site-packages",
+    "./python",
+    "./aws",
+    "./providers/python/lib/python3.9/site-packages",
+    "./services/create_tweet"
+  ]
+}

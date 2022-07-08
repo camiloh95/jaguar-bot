@@ -1,0 +1,128 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  jaguar-bot
+
+Globals:
+  Function:
+    Timeout: 10
+    Tracing: Active
+
+Resources:
+  Providers:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+        CompatibleArchitectures:
+          - x86_64
+        CompatibleRuntimes:
+          - python3.9
+        ContentUri: providers
+        Description: providers to connect with third party API and AWS
+        LayerName: Providers
+        LicenseInfo: MIT
+  Packages:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+        CompatibleArchitectures:
+          - x86_64
+        CompatibleRuntimes:
+          - python3.9
+        ContentUri: packages
+        Description: providers to connect with third party API and AWS
+        LayerName: Packages
+        LicenseInfo: MIT
+  CreateTweetFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: services/create_tweet/
+      Handler: service.create_tweet
+      Runtime: python3.9
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement: 
+            - Effect: 'Allow'
+              Resource: arn:aws:dynamodb:us-east-1:956964030310:table/tweets
+              Action:
+                - 'dynamodb:BatchGetItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:Scan'
+                - 'dynamodb:Query'
+                - 'dynamodb:BatchWriteItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:UpdateItem'
+                - 'dynamodb:DeleteItem'
+      Layers:
+        - !Ref Providers
+        - !Ref Packages
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          TWITTER_API_URL: !Ref TwitterApiURL
+          TWITTER_CONSUMER_KEY: !Ref TwitterConsumerKey
+          TWITTER_CONSUMER_SECRET: !Ref TwitterConsumerSecret
+          TWITTER_ACCESS_TOKEN: !Ref TwitterAccessToken
+          TWITTER_TOKEN_SECRET: !Ref TwitterTokenSecret
+      Events:
+        CreateTweet:
+          Type: Schedule
+          Properties:
+            Name: CreateTweetSchedule
+            Description: Create Tweet Schedule
+            Schedule: cron(0 13 * * ? *)
+            Enabled: true
+  TweetsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: tweets
+      TableClass: STANDARD
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: bot_type
+          AttributeType: S
+        - AttributeName: tweet_date
+          AttributeType: S
+      KeySchema:
+        - AttributeName: bot_type
+          KeyType: HASH
+        - AttributeName: tweet_date
+          KeyType: RANGE
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: chyr-twitter-bot-images
+
+Outputs:
+  CreateTweetFunction:
+    Description: 'Create Tweet Lambda Function ARN'
+    Value: !GetAtt CreateTweetFunction.Arn
+  CreateTweetFunctionIamRole:
+    Description: 'Implicit IAM Role created for Create Tweet function'
+    Value: !GetAtt CreateTweetFunctionRole.Arn
+
+Parameters:
+  TwitterApiURL:
+    Type: String
+    Description: Twitter API URL
+  TwitterConsumerKey:
+    Type: String
+    Description: Twitter Consumer Key
+  TwitterConsumerSecret:
+    Type: String
+    Description: Twitter Consumer Secret
+  TwitterAccessToken:
+    Type: String
+    Description: Twitter Access Token
+  TwitterTokenSecret:
+    Type: String
+    Description: Twitter Token Secret

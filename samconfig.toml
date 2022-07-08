@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "jaguar-bot"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-u8h4823n5uup"
+s3_prefix = "jaguar-bot"
+region = "us-east-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+image_repositories = []
