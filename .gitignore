@@ -246,3 +246,6 @@ $RECYCLE.BIN/
 index.py
 .aws-sam
 .vscode
+
+# packages
+/packages/python/lib/python3.9/site-packages/*
