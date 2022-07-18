@@ -9,6 +9,10 @@ Globals:
     Tracing: Active
 
 Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: chyr-twitter-bot-images
   Providers:
     Type: AWS::Serverless::LayerVersion
     Properties:
@@ -50,11 +54,11 @@ Resources:
         - Version: '2012-10-17'
           Statement: 
             - Effect: Allow
-              Resource: arn:aws:s3:::bucketname
+              Resource: arn:aws:s3:::chyr-twitter-bot-images
               Action: 
                 - s3:ListBucket
             - Effect: Allow
-              Resource: arn:aws:s3:::bucketname/*
+              Resource: arn:aws:s3:::chyr-twitter-bot-images/*
               Action:
                 - s3:GetObject
         - AWSLambdaExecute
@@ -107,10 +111,6 @@ Resources:
           KeyType: HASH
         - AttributeName: tweet_date
           KeyType: RANGE
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: chyr-twitter-bot-images
 
 Outputs:
   CreateTweetFunction:
