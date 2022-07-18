@@ -29,10 +29,10 @@ def create_tweet(event, context):
       access_token_secret=os.environ['TWITTER_TOKEN_SECRET']
     )
 
-    images = os.listdir('tmp')
+    images = os.listdir('/tmp/bot_images')
     media_ids = []
     for image in images:
-      response = api.media_upload(filename=f'tmp/{image}')
+      response = api.media_upload(filename=f'/tmp/bot_images/{image}')
       media_id = getattr(response, 'media_id_string')
       media_ids.append(media_id)
 
