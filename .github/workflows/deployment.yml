@@ -24,7 +24,7 @@ jobs:
             TwitterConsumerKey=$TWITTER_CONSUMER_KEY\
             TwitterConsumerSecret=$TWITTER_CONSUMER_SECRET\
             TwitterAccessToken=$TWITTER_ACCESS_TOKEN\
-            TwitterTokenSecret=$TWITTER_TOKEN_SECRET
+            TwitterTokenSecret=$TWITTER_TOKEN_SECRET\
             TwitterBearerToken=$TWITTER_BEARER_TOKEN
         env:
           TWITTER_API_URL: ${{ secrets.TWITTER_API_URL }}
