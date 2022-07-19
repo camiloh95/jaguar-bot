@@ -8,9 +8,11 @@ def create_tweet(event, context):
   images_folder_path = os.environ['IMAGES_FOLDER_PATH']
 
   try:
-    items = dynamodb.get_items()
+    tableName='tweets'
+    items = dynamodb.get_items(tableName='tweets')
     for item in items['Items']:
-      if item['publish']['BOOL'] == False:
+      if item['published']['BOOL'] == False:
+        item_to_publish = item
         text = item['text']['S']
         images_folder = item['images_folder']['S']
         break
@@ -41,6 +43,7 @@ def create_tweet(event, context):
       media_ids.append(media_id)
 
     response = client.create_tweet(text=text, media_ids=media_ids)
+    dynamodb.update_publish(tableName, item_to_publish)
   except requests.RequestException as e:
     raise e 
 
