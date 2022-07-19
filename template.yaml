@@ -87,6 +87,7 @@ Resources:
           TWITTER_CONSUMER_SECRET: !Ref TwitterConsumerSecret
           TWITTER_ACCESS_TOKEN: !Ref TwitterAccessToken
           TWITTER_TOKEN_SECRET: !Ref TwitterTokenSecret
+          TWITTER_BEARER_TOKEN: !Ref TwitterBearerToken
       Events:
         CreateTweet:
           Type: Schedule
@@ -136,3 +137,6 @@ Parameters:
   TwitterTokenSecret:
     Type: String
     Description: Twitter Token Secret
+  TwitterBearerToken:
+    Type: String
+    Description: Twitter Bearer Token
