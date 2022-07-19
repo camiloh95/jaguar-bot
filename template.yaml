@@ -88,6 +88,7 @@ Resources:
           TWITTER_ACCESS_TOKEN: !Ref TwitterAccessToken
           TWITTER_TOKEN_SECRET: !Ref TwitterTokenSecret
           TWITTER_BEARER_TOKEN: !Ref TwitterBearerToken
+          IMAGES_FOLDER_PATH: !Ref ImagesFolderPath
       Events:
         CreateTweet:
           Type: Schedule
@@ -140,3 +141,6 @@ Parameters:
   TwitterBearerToken:
     Type: String
     Description: Twitter Bearer Token
+  ImagesFolderPath:
+    Type: String
+    Description: Images Folder Path

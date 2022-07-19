@@ -25,7 +25,8 @@ jobs:
             TwitterConsumerSecret=$TWITTER_CONSUMER_SECRET\
             TwitterAccessToken=$TWITTER_ACCESS_TOKEN\
             TwitterTokenSecret=$TWITTER_TOKEN_SECRET\
-            TwitterBearerToken=$TWITTER_BEARER_TOKEN
+            TwitterBearerToken=$TWITTER_BEARER_TOKEN\
+            ImagesFolderPath=$IMAGES_FOLDER_PATH
         env:
           TWITTER_API_URL: ${{ secrets.TWITTER_API_URL }}
           TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
@@ -33,3 +34,4 @@ jobs:
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_TOKEN_SECRET: ${{ secrets.TWITTER_TOKEN_SECRET }}
           TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          IMAGES_FOLDER_PATH: ${{ secrets.IMAGES_FOLDER_PATH }}
