@@ -5,19 +5,24 @@ import requests
 import dynamodb
 
 def create_tweet(event, context):
-  images_folder_path = os.environ['IMAGES_FOLDER_PATH']
+  imagesFolderPath = os.environ['IMAGES_FOLDER_PATH']
+  itemToPublish = None
 
   try:
     tableName='tweets'
     items = dynamodb.get_items(tableName='tweets')
     for item in items['Items']:
       if item['published']['BOOL'] == False:
-        item_to_publish = item
+        itemToPublish = item
         text = item['text']['S']
-        images_folder = item['images_folder']['S']
+        imagesFolder = item['images_folder']['S']
         break
 
-    S3.download_bot_images(images_folder)
+    if itemToPublish == None:
+      return {
+        'message': 'there are no more tweets to publish'
+      }
+
     auth = tweepy.OAuthHandler(
       os.environ['TWITTER_CONSUMER_KEY'],
       os.environ['TWITTER_CONSUMER_SECRET']
@@ -35,15 +40,19 @@ def create_tweet(event, context):
       access_token_secret=os.environ['TWITTER_TOKEN_SECRET']
     )
 
-    images = os.listdir(images_folder_path)
-    media_ids = []
-    for image in images:
-      response = api.media_upload(filename=f'{images_folder_path}/{image}')
-      media_id = getattr(response, 'media_id_string')
-      media_ids.append(media_id)
+    imagesResponse = S3.download_bot_images(imagesFolder)
 
-    response = client.create_tweet(text=text, media_ids=media_ids)
-    dynamodb.update_publish(tableName, item_to_publish)
+    if imagesResponse == 'empty folder':
+      images = os.listdir(imagesFolderPath)
+      mediaIds = []
+      for image in images:
+        response = api.media_upload(filename=f'{imagesFolderPath}/{image}')
+        mediaId = getattr(response, 'media_id_string')
+        mediaIds.append(mediaId)
+      response = client.create_tweet(text=text, media_ids=mediaIds)
+    else:
+      response = client.create_tweet(text=text)
+    dynamodb.update_publish(tableName, itemToPublish)
   except requests.RequestException as e:
     raise e 
 
